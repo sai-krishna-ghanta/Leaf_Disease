@@ -1,11 +1,40 @@
+from numpy.lib.type_check import imag
 import streamlit as st
 from PIL import Image
 from numpy import asarray
 import numpy as np
-import pickle
-import os 
+def lab():
+    from pathlib import Path
+    p = Path("apps\Dataset")
+    dirs = p.glob("*")
+    labels_dict = {}
+    for i,folder_dir in enumerate(dirs):
+        label = str(folder_dir).split("/")[-1][:]
+        labels_dict[label] = i  
+    print(labels_dict)
+    p = Path("apps\Dataset")
+    dirs = p.glob("*")
+    image_data = []
+    labels = []
+    for i,folder_dir in enumerate(dirs):
+        label = str(folder_dir).split("/")[-1][:]
+        for img_path in folder_dir.glob("*.JPG"):
+            img =  Image.open(img_path)
+            img = img.resize((32,32))
+            from numpy import asarray
+            img_array = asarray(img)
+            image_data.append(img_array)
+            labels.append(labels_dict[label])
+        
+    image_data = np.array(image_data, dtype='float32')/255.0
+    labels = np.array(labels)
 
-
+    print(image_data.shape, labels.shape)
+    print(len(image_data))
+    print(len(labels))
+    M = image_data.shape[0]
+    image_data = image_data.reshape(M,-1)
+    return image_data,labels
 
 def app():
 
@@ -24,9 +53,7 @@ def app():
         st.text("Original Image")
         st.image(our_image)
     if st.button("Detect"):   
-        filename = 'Pickle_RL_Model.pkl'
-        with open(filename, 'rb') as f:
-            svm_classifier = pickle.load(f) 
+        
         input_data = []
         img = our_image.resize((32,32))
         data = asarray(img)
@@ -35,6 +62,10 @@ def app():
         M = input_data.shape[0]
         input_data = input_data.reshape(M,-1)
         for i in range(0,1) :
+            from sklearn import svm
+            image_data, labels = lab()
+            svm_classifier = svm.SVC(kernel='linear', C=1.0)
+            svm_classifier.fit(image_data, labels)
             prediction = svm_classifier.predict([input_data[i]])
         if prediction == 0:
             var = "It might be bacterial spot or septoria spot"
@@ -61,6 +92,8 @@ def app():
         st.text(b)
         st.text(c)
         st.text(d)
+
+
 
 
 
