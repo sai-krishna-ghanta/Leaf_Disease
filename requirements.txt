@@ -4,7 +4,6 @@ Pillow==8.2.0
 pipwin==0.5.1
 s3transfer==0.5.0
 scikit-learn==0.24.2
-opencv-python
 pickleshare==0.7.5
 streamlit
 
