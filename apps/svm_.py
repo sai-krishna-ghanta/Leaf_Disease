@@ -26,7 +26,7 @@ def app():
     if st.button("Detect"):   
         filename = 'Pickle_RL_Model.pkl'
         with open(filename, 'rb') as f:
-        svm_classifier = pickle.load(f) 
+            svm_classifier = pickle.load(f) 
         input_data = []
         img = our_image.resize((32,32))
         data = asarray(img)
