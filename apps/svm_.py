@@ -4,7 +4,7 @@ from numpy import asarray
 import numpy as np
 import pickle
 import os 
-filename = 'apps\Pickle_RL_Model.pkl'
+filename = 'Pickle_RL_Model.pkl'
 with open(filename, 'rb') as f:
     svm_classifier = pickle.load(f) 
 
